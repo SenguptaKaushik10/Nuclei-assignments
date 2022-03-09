@@ -4,13 +4,20 @@ import 'package:assignment1/models/item_details.dart';
 class ImportedItems extends ItemDetails {
   String? itemName, itemType;
   double? itemPrice, itemQuantity;
+  static const IMPORT_DUTY_PERCENTAGE = 0.1;
+  static const SURCHARGE_IF_PRICE_LESS_THAN_OR_EQUAL_TO_HUNDRED = 5.0;
+  static const SURCHARGE_IF_PRICE_GREATER_THAN_HUNDRED_AND_LESS_THAN_OR_EQUAL_TO_TWO_HUNDRED =
+      10.0;
+  static const SURCHARGE_PERCENTAGE_IF_PRICE_GREATER_THAN_TWO_HUNDRED = 0.05;
+  static const FINAL_COST_LOWER_HAND = 100.0;
+  static const FINAL_COST_UPPER_HAND = 200.0;
   ImportedItems(
       this.itemName, this.itemPrice, this.itemQuantity, this.itemType);
 
   // calculate import duty of imported items
   @override
   double calculateTax() {
-    return 0.1 * itemPrice!;
+    return IMPORT_DUTY_PERCENTAGE * itemPrice!;
   }
 
   // final price here implies cost per unit after applying import duty
@@ -21,12 +28,18 @@ class ImportedItems extends ItemDetails {
 
   // total price of imported item implies cost per uni after applying surcharge
   double calculateTotalPriceOfImportedItem(double newPrice) {
-    if (newPrice <= 100.0) {
-      return itemQuantity! * (5.0 + newPrice);
-    } else if (newPrice > 100.0 && newPrice <= 200.0) {
-      return itemQuantity! * (10.0 + newPrice);
+    if (newPrice <= FINAL_COST_LOWER_HAND) {
+      return itemQuantity! *
+          (SURCHARGE_IF_PRICE_LESS_THAN_OR_EQUAL_TO_HUNDRED + newPrice);
+    } else if (newPrice > FINAL_COST_LOWER_HAND &&
+        newPrice <= FINAL_COST_UPPER_HAND) {
+      return itemQuantity! *
+          (SURCHARGE_IF_PRICE_GREATER_THAN_HUNDRED_AND_LESS_THAN_OR_EQUAL_TO_TWO_HUNDRED +
+              newPrice);
     } else {
-      return itemQuantity! * (0.05 * newPrice + newPrice);
+      return itemQuantity! *
+          (SURCHARGE_PERCENTAGE_IF_PRICE_GREATER_THAN_TWO_HUNDRED * newPrice +
+              newPrice);
     }
   }
 }
