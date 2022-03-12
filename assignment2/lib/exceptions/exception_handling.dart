@@ -1,3 +1,7 @@
+class InvalidOptionForMenuSelectionException implements Exception {
+  InvalidOptionForMenuSelectionException();
+}
+
 class InvalidAgeException implements Exception {
   InvalidAgeException();
 }
@@ -10,6 +14,18 @@ class NotUniqueRollNoException implements Exception {
   NotUniqueRollNoException();
 }
 
-class AllCoursesNotUniqueException implements Exception {
-  AllCoursesNotUniqueException();
+class AllCoursesNotUniqueOrValidException implements Exception {
+  AllCoursesNotUniqueOrValidException();
+}
+
+class InvalidSortingArgumentSelectionException implements Exception {
+  InvalidSortingArgumentSelectionException();
+}
+
+class InvalidSortingOrderSelectionException implements Exception {
+  InvalidSortingOrderSelectionException();
+}
+
+class AllUserFullNamesNotUniqueException implements Exception {
+  AllUserFullNamesNotUniqueException();
 }

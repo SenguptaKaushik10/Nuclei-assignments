@@ -9,7 +9,8 @@ class Address {
 
   Address(this.street, this.city, this.state, this.zip);
 
-  factory Address.fromJson(Map<String, String> data) => _$AddressFromJson(data);
+  factory Address.fromJson(Map<String, dynamic> data) =>
+      _$AddressFromJson(data);
 
-  Map<String, String> toJson() => _$AddressToJson(this);
+  Map<String, dynamic> toJson() => _$AddressToJson(this);
 }

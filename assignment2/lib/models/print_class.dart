@@ -1,6 +1,7 @@
 import 'package:assignment2/models/user.dart';
+import 'package:assignment2/strings/strings_for_exception.dart';
 
-class Print {
+class PrintClass {
   static printFunction(
       List<User> allStudents, int sortingArgument, int sortingOrder) {
     switch (sortingArgument) {
@@ -69,6 +70,9 @@ class Print {
                 '${student.fullName}  ${student.rollNo}  ${student.age}  ${student.address?.street}, ${student.address?.city}, ${student.address?.state}, ${student.address?.zip}   ${student.setOfCourses?.courses!.join(', ')}');
           }
         }
+        break;
+      default:
+        print(StringsForException.FORMAT_EXCEPTION_STRING);
         break;
     }
   }

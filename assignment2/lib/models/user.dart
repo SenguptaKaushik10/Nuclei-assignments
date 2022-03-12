@@ -14,8 +14,8 @@ class User {
   User(this.fullName, this.age, this.address, this.rollNo, this.setOfCourses);
 
   //map<String, dynamic>
-  factory User.fromJson(Map<String, String> data) => _$UserFromJson(data);
+  factory User.fromJson(Map<String, dynamic> data) => _$UserFromJson(data);
 
   //Map<String, dynamic>
-  Map<String, String> toJson() => _$UserToJson(this);
+  Map<String, dynamic> toJson() => _$UserToJson(this);
 }

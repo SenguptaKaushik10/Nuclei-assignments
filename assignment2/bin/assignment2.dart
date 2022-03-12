@@ -5,115 +5,187 @@ import 'package:assignment2/models/command_line_menu.dart';
 import 'package:assignment2/models/courses.dart';
 import 'package:assignment2/models/print_class.dart';
 import 'package:assignment2/models/user.dart';
+import 'package:assignment2/storage/session_storage.dart';
+import 'package:assignment2/strings/command_line_menu_string.dart';
+import 'package:assignment2/strings/input_output_strings.dart';
+import 'package:assignment2/strings/strings_for_exception.dart';
 import 'package:assignment2/utils/validation_utils.dart';
 
 void main() {
-  List<User> allStudents = [];
+  //List<User> allStudents = [];
+  //bool firstTimeRun = true;
   OuterLoop:
   while (true) {
     int option = CommandLineMenu.userMenu();
+    try {
+      ValidationUtils.checkIfOptionSelectedForMenuIsValid(option);
+    } on InvalidOptionForMenuSelectionException {
+      print(StringsForException
+          .INVALID_OPTION_FOR_MENU_SELECTION_EXCEPTION_STRING);
+      break;
+    } on FormatException {
+      print(StringsForException.FORMAT_EXCEPTION_STRING);
+      break;
+    }
     SwitchCase:
     switch (option) {
       case 1:
-        print('Enter your full name: ');
-        String fullName = stdin.readLineSync()!;
-        print('Enter your age: ');
+        print(InputOutputStrings.ENTER_FULL_NAME_STRING);
+        String fullName;
+        try {
+          fullName = stdin.readLineSync()!;
+        } on FormatException {
+          print(StringsForException.FORMAT_EXCEPTION_STRING);
+          break SwitchCase;
+        }
+        print(InputOutputStrings.ENTER_AGE_STRING);
         int? age = int.parse(stdin.readLineSync()!);
         try {
           ValidationUtils.checkIfAgeIsValid(age);
         } on InvalidAgeException {
-          print('Please enter age between 18 to 40');
+          print(StringsForException.INVALID_AGE_EXCEPTION_STRING);
+          break SwitchCase;
+        } on FormatException {
+          print(StringsForException.FORMAT_EXCEPTION_STRING);
           break SwitchCase;
         }
-        print('Enter your address as: ');
-        print('Street: ');
-        String? street = stdin.readLineSync();
-        print('City: ');
-        String? city = stdin.readLineSync();
-        print('State: ');
-        String? state = stdin.readLineSync();
-        print('ZIP: ');
+        print(InputOutputStrings.ENTER_ADDRESS_STRING);
+        String? street, city, state;
+        try {
+          print(InputOutputStrings.ENTER_STREET_STRING);
+          street = stdin.readLineSync();
+          print(InputOutputStrings.ENTER_CITY_STRING);
+          city = stdin.readLineSync();
+          print(InputOutputStrings.ENTER_STATE_STRING);
+          state = stdin.readLineSync();
+        } on FormatException {
+          print(StringsForException.FORMAT_EXCEPTION_STRING);
+          break SwitchCase;
+        }
+        print(InputOutputStrings.ENTER_ZIP_STRING);
         int? zip = int.parse(stdin.readLineSync()!);
         try {
           ValidationUtils.checkIfZipIsValid(zip);
         } on InvalidZipException {
-          print('Please enter a valid ZIP code');
+          print(StringsForException.INVALID_ZIP_EXCEPTION_STRING);
+          break SwitchCase;
+        } on FormatException {
+          print(StringsForException.FORMAT_EXCEPTION_STRING);
           break SwitchCase;
         }
         Address? address = Address(street!, city!, state!, zip);
-        print('Enter your Roll number: ');
+        print(InputOutputStrings.ENTER_ROLL_NO_STRING);
         int rollNo = int.parse(stdin.readLineSync()!);
         try {
-          ValidationUtils.checkIfRollNoIsUnique(rollNo, allStudents);
+          ValidationUtils.checkIfRollNoIsUnique(
+              rollNo, SessionStorage.instance.getuserDetails());
         } on NotUniqueRollNoException {
-          print(
-              "This Roll number is already taken, please enter a unique Roll number");
+          print(StringsForException.NOT_UNIQUE_ROLL_NO_EXCEPTION_STRING);
+          break SwitchCase;
+        } on FormatException {
+          print(StringsForException.FORMAT_EXCEPTION_STRING);
           break SwitchCase;
         }
-        print('Enter the four courses that you want to opt for: ');
+        print(InputOutputStrings.ENTER_COURSES_STRING);
         String stringOfCourses = stdin.readLineSync()!;
         List<String> listOfCourses = stringOfCourses.split(RegExp('\\s+'));
         //space separated string
         try {
           ValidationUtils.checkIfAllCoursesAreValidAndUnique(listOfCourses);
-        } on AllCoursesNotUniqueException {
-          print('Please enter all four unique courses');
+        } on AllCoursesNotUniqueOrValidException {
+          print(StringsForException.ALL_COURSES_NOT_UNIQUE_OR_VALID_EXCEPTION);
+          break SwitchCase;
+        } on FormatException {
+          print(StringsForException.FORMAT_EXCEPTION_STRING);
           break SwitchCase;
         }
         Courses courses = Courses(listOfCourses);
         User student = User(fullName, age, address, rollNo, courses);
-        allStudents.add(student);
+        //getters and setters of allstudents list
+        //SessionStorage.instance.readUserDetails();
+        //firstTimeRun ? print('') : SessionStorage.instance.readUserDetails();
+        SessionStorage.instance.addUserDetails(student);
         //check if names are unique, if not, then sort on the basis of rollno.
-        allStudents.sort((a, b) => a.fullName!.compareTo(b.fullName!));
+        try {
+          ValidationUtils.checkIfAllFullNamesAreUnique(
+              SessionStorage.instance.getuserDetails());
+        } on AllUserFullNamesNotUniqueException {
+          SessionStorage.instance
+              .getuserDetails()
+              .sort((a, b) => a.rollNo!.compareTo(b.rollNo!));
+        }
+        SessionStorage.instance
+            .getuserDetails()
+            .sort((a, b) => a.fullName!.compareTo(b.fullName!));
         break SwitchCase;
       case 2:
-        print('Enter the choice of argument on whose basis you want to sort: ');
-        print('1. Full name');
-        print('2. Roll number');
-        print('3. Age');
-        print('4. Address');
-        int? sortingArgument = int.parse(stdin.readLineSync()!);
-        print("Enter the order in which you want to sort: ");
-        print('1. Ascending order');
-        print('2. Descending order');
-        int? sortingOrder = int.parse(stdin.readLineSync()!);
-        print(
-            '------------------------------------------------------------------------------------------------------------');
-        print(
-            'Name             Roll Number   Age   Address                               Courses');
-        print(
-            '------------------------------------------------------------------------------------------------------------');
-        Print.printFunction(allStudents, sortingArgument, sortingOrder);
+        print(InputOutputStrings.ENTER_CHOICE_OF_SORTING_ARGUMENT_STRING);
+        print(InputOutputStrings.OPTION_FULL_NAME_STRING);
+        print(InputOutputStrings.OPTION_ROLL_NO_STRING);
+        print(InputOutputStrings.OPTION_AGE_STRING);
+        print(InputOutputStrings.OPTION_ADDRESS_STRING);
+        int? sortingArgumentIndex = int.parse(stdin.readLineSync()!);
+        try {
+          ValidationUtils.checkIfSortingArgumentIsValid(sortingArgumentIndex);
+        } on InvalidSortingArgumentSelectionException {
+          print(
+              StringsForException.INVALID_SORTING_ARGUMENT_SELECTION_EXCEPTION);
+          break SwitchCase;
+        } on FormatException {
+          print(StringsForException.FORMAT_EXCEPTION_STRING);
+          break SwitchCase;
+        }
+        print(InputOutputStrings.ENTER_CHOICE_OF_SORTING_ORDER_STRING);
+        print(InputOutputStrings.OPTION_ASCENDING_ORDER_STRING);
+        print(InputOutputStrings.OPTION_DESCENDING_ORDER_STRING);
+        int? sortingOrderIndex = int.parse(stdin.readLineSync()!);
+        try {
+          ValidationUtils.checkIfSortingOrderIsValid(sortingOrderIndex);
+        } on InvalidSortingOrderSelectionException {
+          print(StringsForException.INVALID_SORTING_ORDER_SELECTION_EXCEPTION);
+          break SwitchCase;
+        } on FormatException {
+          print(StringsForException.FORMAT_EXCEPTION_STRING);
+          break SwitchCase;
+        }
+        print(InputOutputStrings.DASH_STRING_FOR_TABLE_DISPLAY);
+        print(InputOutputStrings.TABLE_HEADER_STRING);
+        print(InputOutputStrings.DASH_STRING_FOR_TABLE_DISPLAY);
+        //firstTimeRun ? print('') : SessionStorage.instance.readUserDetails();
+        //SessionStorage.instance.readUserDetails();
+        PrintClass.printFunction(SessionStorage.instance.getuserDetails(),
+            sortingArgumentIndex, sortingOrderIndex);
         break SwitchCase;
       case 3:
-        print(
-            "Enter the Roll Number of student whose details you want to delete: ");
+        print(InputOutputStrings.ENTER_ROLL_NO_TO_BE_DELETED_STRING);
         int rollNoToBeDeleted = int.parse(stdin.readLineSync()!);
         //check if roll no not present in set of students
         int flag = 0;
         InnerForLoop:
-        for (var student in allStudents) {
+        for (var student in SessionStorage.instance.getuserDetails()) {
           if (student.rollNo == rollNoToBeDeleted) {
             flag = 1;
             break InnerForLoop;
           }
         }
         if (flag == 0) {
-          print(
-              'The Roll number you have entered does not belong to any valid student');
+          print(InputOutputStrings.INVALID_ROLL_NO_FOR_DELETION_STRING);
           break SwitchCase;
         }
-        allStudents
-            .removeWhere((student) => student.rollNo == rollNoToBeDeleted);
+        SessionStorage.instance.deleteUserDetails(rollNoToBeDeleted);
+        print(CommandLineMenuString.USER_DETAILS_DELETED_STRING);
         break SwitchCase;
       case 4:
+        SessionStorage.instance.saveUserDetails();
+        print(CommandLineMenuString.USER_DETAILS_SAVED_STRING);
         break SwitchCase;
       case 5:
-        print("Exitting...");
+        print(CommandLineMenuString.EXIT_MESSAGE_STRING);
         break OuterLoop;
       default:
-        print("Please select a valid option");
+        print(CommandLineMenuString.DEFAULT_STRING);
         break SwitchCase;
     }
+    //firstTimeRun = false;
   }
 }
