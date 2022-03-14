@@ -4,6 +4,7 @@ import 'package:assignment2/storage/session_storage.dart';
 import 'dart:io';
 
 class PersistantStorage {
+  //singleton class
   static PersistantStorage? _instance;
   static PersistantStorage get instance => _instance ??= PersistantStorage._();
   PersistantStorage._();
@@ -30,10 +31,11 @@ class PersistantStorage {
 
     if (f.existsSync() == false) {
       print("The file doesn't exist");
-      return [];
+      return <User>[];
+    } else {
+      String jsonString = f.readAsStringSync();
+      return _jsonStringToUserListMap(jsonString);
     }
-    String jsonString = f.readAsStringSync();
-    return _jsonStringToUserListMap(jsonString);
   }
 
 //return userListMap

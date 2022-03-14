@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:assignment2/exceptions/exception_handling.dart';
 import 'package:assignment2/models/user.dart';
 

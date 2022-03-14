@@ -1,7 +1,7 @@
 class CommandLineMenuString {
   static const OPTION_SELECTION_STRING = 'Select an option: ';
   static const ADD_USER_DETAILS_STRING = '1. Add User details';
-  static const DISPLAY_USER_DETAILS_STRING = '2. Display Useer details';
+  static const DISPLAY_USER_DETAILS_STRING = '2. Display User details';
   static const DELETE_USER_DETAILS_STRING = '3. Delete User details';
   static const SAVE_USER_DETAILS_STRING = '4. Save User details';
   static const EXIT_STRING = '5. Exit';

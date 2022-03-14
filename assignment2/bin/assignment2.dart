@@ -12,8 +12,7 @@ import 'package:assignment2/strings/strings_for_exception.dart';
 import 'package:assignment2/utils/validation_utils.dart';
 
 void main() {
-  //List<User> allStudents = [];
-  //bool firstTimeRun = true;
+  SessionStorage.instance.readUserDetails();
   OuterLoop:
   while (true) {
     int option = CommandLineMenu.userMenu();
@@ -102,8 +101,6 @@ void main() {
         Courses courses = Courses(listOfCourses);
         User student = User(fullName, age, address, rollNo, courses);
         //getters and setters of allstudents list
-        //SessionStorage.instance.readUserDetails();
-        //firstTimeRun ? print('') : SessionStorage.instance.readUserDetails();
         SessionStorage.instance.addUserDetails(student);
         //check if names are unique, if not, then sort on the basis of rollno.
         try {
@@ -151,8 +148,6 @@ void main() {
         print(InputOutputStrings.DASH_STRING_FOR_TABLE_DISPLAY);
         print(InputOutputStrings.TABLE_HEADER_STRING);
         print(InputOutputStrings.DASH_STRING_FOR_TABLE_DISPLAY);
-        //firstTimeRun ? print('') : SessionStorage.instance.readUserDetails();
-        //SessionStorage.instance.readUserDetails();
         PrintClass.printFunction(SessionStorage.instance.getuserDetails(),
             sortingArgumentIndex, sortingOrderIndex);
         break SwitchCase;
@@ -180,12 +175,25 @@ void main() {
         print(CommandLineMenuString.USER_DETAILS_SAVED_STRING);
         break SwitchCase;
       case 5:
-        print(CommandLineMenuString.EXIT_MESSAGE_STRING);
-        break OuterLoop;
+        const YES = 'y';
+        print(InputOutputStrings.BEFORE_EXIT_SAVE_PROMPT_STRING);
+        print(InputOutputStrings.YES_NO_STRING);
+        String inputChar = stdin.readLineSync()!;
+        switch (inputChar.toLowerCase()) {
+          case 'y':
+            SessionStorage.instance.saveUserDetails();
+            print(CommandLineMenuString.EXIT_MESSAGE_STRING);
+            break OuterLoop;
+          case 'n':
+            print(CommandLineMenuString.EXIT_MESSAGE_STRING);
+            break OuterLoop;
+          default:
+            print(CommandLineMenuString.DEFAULT_STRING);
+            break SwitchCase;
+        }
       default:
         print(CommandLineMenuString.DEFAULT_STRING);
         break SwitchCase;
     }
-    //firstTimeRun = false;
   }
 }

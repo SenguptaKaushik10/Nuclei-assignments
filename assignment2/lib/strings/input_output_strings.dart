@@ -27,4 +27,7 @@ class InputOutputStrings {
       "Enter the Roll Number of student whose details you want to delete: ";
   static const INVALID_ROLL_NO_FOR_DELETION_STRING =
       'The Roll number you have entered does not belong to any valid student';
+  static const BEFORE_EXIT_SAVE_PROMPT_STRING =
+      "Do you want to save your latest changes (additions/deletions of users)?";
+  static const YES_NO_STRING = 'y/n: ';
 }

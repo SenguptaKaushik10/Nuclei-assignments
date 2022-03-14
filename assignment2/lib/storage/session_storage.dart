@@ -2,6 +2,7 @@ import 'package:assignment2/models/user.dart';
 import 'package:assignment2/storage/persistant_storage.dart';
 
 class SessionStorage {
+  //singleton class
   List<User> _allUsers = [];
   static SessionStorage? _instance;
   static SessionStorage get instance => _instance ??= SessionStorage._();
@@ -23,9 +24,8 @@ class SessionStorage {
     PersistantStorage.instance.save(_allUsers);
   }
 
-  List<User> readUserDetails() {
+  void readUserDetails() {
     List<User> newList = PersistantStorage.instance.read();
-    _allUsers = [...newList];
-    return _allUsers;
+    _allUsers = _allUsers + newList;
   }
 }
